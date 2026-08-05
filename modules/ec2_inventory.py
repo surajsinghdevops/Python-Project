@@ -1,46 +1,65 @@
 import boto3
+
+from botocore.exceptions import ClientError
+
 from config.config import AWS_REGION
+
+from modules.logger import logger
 
 
 def get_ec2_inventory():
-    """
-    Fetch EC2 instance inventory from AWS.
-    """
 
-    ec2 = boto3.client("ec2", region_name=AWS_REGION)
+    try:
 
-    response = ec2.describe_instances()
+        ec2 = boto3.client(
+            "ec2",
+            region_name=AWS_REGION
+        )
 
-    instances = []
+        response = ec2.describe_instances()
 
-    for reservation in response["Reservations"]:
-        for instance in reservation["Instances"]:
+        instances = []
 
-            name = "N/A"
+        for reservation in response["Reservations"]:
 
-            if "Tags" in instance:
-                for tag in instance["Tags"]:
-                    if tag["Key"] == "Name":
-                        name = tag["Value"]
+            for instance in reservation["Instances"]:
 
-            instances.append({
+                name = "N/A"
 
-                "Name": name,
+                if "Tags" in instance:
 
-                "Instance ID": instance["InstanceId"],
+                    for tag in instance["Tags"]:
 
-                "State": instance["State"]["Name"],
+                        if tag["Key"] == "Name":
 
-                "Instance Type": instance["InstanceType"],
+                            name = tag["Value"]
 
-                "Public IP": instance.get("PublicIpAddress", "N/A"),
+                instances.append({
 
-                "Private IP": instance.get("PrivateIpAddress", "N/A"),
+                    "Name": name,
 
-                "Availability Zone": instance["Placement"]["AvailabilityZone"],
+                    "Instance ID": instance["InstanceId"],
 
-                "Launch Time": str(instance["LaunchTime"])
+                    "State": instance["State"]["Name"],
 
-            })
+                    "Instance Type": instance["InstanceType"],
 
-    return instances
+                    "Public IP": instance.get("PublicIpAddress", "N/A"),
+
+                    "Private IP": instance.get("PrivateIpAddress", "N/A"),
+
+                    "Availability Zone": instance["Placement"]["AvailabilityZone"],
+
+                    "Launch Time": str(instance["LaunchTime"])
+
+                })
+
+        logger.info("EC2 inventory collected successfully.")
+
+        return instances
+
+    except ClientError as error:
+
+        logger.error(error)
+
+        return []
