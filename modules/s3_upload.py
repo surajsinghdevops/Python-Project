@@ -1,6 +1,8 @@
 import boto3
 import os
 
+from botocore.exceptions import ClientError
+
 from config.config import AWS_REGION
 from config.config import S3_BUCKET
 
@@ -17,21 +19,27 @@ def upload_reports():
 
     uploaded = 0
 
-    for file in os.listdir(report_folder):
+    try:
 
-        file_path = os.path.join(
-            report_folder,
-            file
-        )
+        for file in os.listdir(report_folder):
 
-        print(f"Uploading {file}...")
+            file_path = os.path.join(
+                report_folder,
+                file
+            )
 
-        s3.upload_file(
-            file_path,
-            S3_BUCKET,
-            file
-        )
+            print(f"Uploading {file}...")
 
-        uploaded += 1
+            s3.upload_file(
+                file_path,
+                S3_BUCKET,
+                file
+            )
 
-    print(f"\n{uploaded} reports uploaded successfully.")
+            uploaded += 1
+
+        print(f"\n✓ {uploaded} reports uploaded successfully.")
+
+    except ClientError as error:
+
+        print(f"\nS3 Upload Failed:\n{error}")
