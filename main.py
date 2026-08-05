@@ -1,3 +1,4 @@
+import boto3
 from modules.ec2_inventory import get_ec2_inventory
 
 
