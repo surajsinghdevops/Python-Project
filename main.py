@@ -17,7 +17,7 @@ from modules.report_generator import (
     generate_json
 )
 
-
+from modules.s3_upload import upload_reports
 def main():
 
     print("=" * 60)
@@ -127,7 +127,7 @@ def main():
     generate_excel(report)
 
     generate_json(report)
-
+    upload_reports()
     # ----------------------------------
     # Infrastructure Summary
     # ----------------------------------
