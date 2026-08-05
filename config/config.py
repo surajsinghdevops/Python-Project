@@ -1,3 +1,3 @@
-# config/config.py
-
 AWS_REGION = "eu-north-1"
+
+CPU_LOOKBACK_MINUTES = 10
