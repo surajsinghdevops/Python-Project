@@ -11,7 +11,11 @@ from modules.cloudwatch_metrics import (
 
 from modules.ebs_details import get_volume_details
 from modules.health_checker import cpu_health
-from modules.report_generator import generate_csv
+from modules.report_generator import (
+    generate_csv,
+    generate_excel,
+    generate_json
+)
 
 
 def main():
@@ -119,6 +123,10 @@ def main():
     # ----------------------------------
 
     generate_csv(report)
+
+    generate_excel(report)
+
+    generate_json(report)
 
     # ----------------------------------
     # Infrastructure Summary
