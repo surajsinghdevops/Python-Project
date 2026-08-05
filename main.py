@@ -1,4 +1,3 @@
-import boto3
 from modules.ec2_inventory import get_ec2_inventory
 from modules.cloudwatch_metrics import get_cpu_utilization
 
@@ -17,11 +16,13 @@ def main():
 
     for instance in instances:
 
-        print("-" * 60)
+        cpu = get_cpu_utilization(instance["Instance ID"])
 
+        print("-" * 60)
         print(f"Name               : {instance['Name']}")
         print(f"Instance ID        : {instance['Instance ID']}")
         print(f"State              : {instance['State']}")
+        print(f"CPU Utilization    : {cpu}%")
         print(f"Instance Type      : {instance['Instance Type']}")
         print(f"Public IP          : {instance['Public IP']}")
         print(f"Private IP         : {instance['Private IP']}")
@@ -29,11 +30,7 @@ def main():
         print(f"Launch Time        : {instance['Launch Time']}")
 
     print("-" * 60)
-        cpu = get_cpu_utilization(
-    instance["Instance ID"]
-)
 
-print(f"CPU Utilization    : {cpu}%")
 
 if __name__ == "__main__":
     main()
